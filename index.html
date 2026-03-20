@@ -388,8 +388,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-</script>
-
   // zapis wyniku do Firebase
 function sendScore(name, score){
   push(ref(db, 'scores'), {
