@@ -371,7 +371,24 @@
   </section>
 </div>
 
-<script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBDT7oalLLCVBFYPaHcZTLXMnK2wHRf_TQ",
+  authDomain: "dzien-otwarty-teb.firebaseapp.com",
+  projectId: "dzien-otwarty-teb",
+  storageBucket: "dzien-otwarty-teb.firebasestorage.app",
+  messagingSenderId: "862448117083",
+  appId: "1:862448117083:web:7a675b85f36251f120e67e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+</script>
   const PUBLIC_BASE_URL = "https://darkwarior1000.github.io/dzien-otwarty/";
 
   let scores = [];
