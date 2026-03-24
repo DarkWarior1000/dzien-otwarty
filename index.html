@@ -878,11 +878,24 @@
     const db = getDatabase(app);
     const scoresRef = ref(db, "scores");
 
-    const avatarOptions = [
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=Alex",
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=Ola",
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=Max",
-      "https://api.dicebear.com/9.x/adventurer/svg?seed=Kasia"
+const avatarOptions = [
+  // jasna karnacja / europejskie
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Anna&skinColor=light",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Piotr&skinColor=light",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Kasia&skinColor=light",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Jan&skinColor=light",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Ola&skinColor=light",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Marek&skinColor=light",
+
+  // neutralne / mieszane
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Alex",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Chris",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Taylor",
+
+  // różnorodne (żeby nie było monotonnie)
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Jordan&skinColor=brown",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Sam&skinColor=dark",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Lee&skinColor=tan"
     ];
 
     const profiles = {
