@@ -1,36 +1,1312 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-<meta charset="UTF-8">
-<title>TEST</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dzień otwarty — Ranking Mistrzów finansów</title>
+  <style>
+    :root{
+      --navy:#0b2f6b;
+      --navy2:#133f87;
+      --cyan:#19d7f2;
+      --cyan2:#72ecff;
+      --mint:#8af7d6;
+      --white:#f7fbff;
+      --text:#f4f8ff;
+      --muted:#bfd2ee;
+      --line:rgba(25,215,242,.18);
+      --panel:rgba(8,25,58,.82);
+      --panel2:rgba(12,36,78,.88);
+      --shadow:0 22px 60px rgba(4,13,34,.34);
+      --radius:26px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(25,215,242,.20), transparent 24%),
+        radial-gradient(circle at 88% 14%, rgba(19,63,135,.28), transparent 26%),
+        radial-gradient(circle at 40% 85%, rgba(114,236,255,.12), transparent 24%),
+        linear-gradient(180deg, #071936 0%, #0a2550 36%, #081c3d 100%);
+      overflow-x:hidden;
+    }
+
+    .bg-grid::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size:44px 44px;
+      mask-image:linear-gradient(180deg, rgba(0,0,0,.8), transparent);
+    }
+
+    .app{width:min(1380px,100%); margin:0 auto; padding:18px}
+    .screen{display:none; animation:fade .24s ease}
+    .screen.active{display:block}
+
+    @keyframes fade{
+      from{opacity:0; transform:translateY(8px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    .hero,.panel,.player-card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero,.player-card{
+      padding:32px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .glow{
+      position:absolute;
+      width:320px;
+      height:320px;
+      border-radius:50%;
+      filter:blur(58px);
+      opacity:.22;
+      pointer-events:none;
+    }
+
+    .g1{background:var(--cyan); top:-110px; right:-70px}
+    .g2{background:#1a4ca4; bottom:-120px; left:-80px}
+    .g3{background:var(--mint); top:44%; left:34%}
+
+    .brand-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 14px;
+      background:rgba(25,215,242,.12);
+      border:1px solid rgba(25,215,242,.22);
+      color:#eafcff;
+      border-radius:999px;
+      font-weight:800;
+      font-size:.95rem;
+      letter-spacing:.02em;
+    }
+
+    .logo-lockup{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:12px 18px;
+      border-radius:999px;
+      background:linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 14px 30px rgba(0,0,0,.18);
+    }
+
+    .logo-box{
+      width:62px;
+      height:62px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, var(--cyan), #36bfff 55%, var(--navy2));
+      color:var(--white);
+      font-size:1.55rem;
+      font-weight:900;
+      letter-spacing:-.04em;
+      animation:logoFloat 3.4s ease-in-out infinite, logoGlow 2.8s ease-in-out infinite;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .logo-box::after{
+      content:"";
+      position:absolute;
+      inset:auto -30% -55% auto;
+      width:90%;
+      height:90%;
+      background:rgba(255,255,255,.22);
+      transform:rotate(25deg);
+      filter:blur(10px);
+    }
+
+    @keyframes logoFloat{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-6px)}
+    }
+
+    @keyframes logoGlow{
+      0%,100%{box-shadow:0 0 0 0 rgba(25,215,242,.22)}
+      50%{box-shadow:0 0 24px 8px rgba(25,215,242,.20)}
+    }
+
+    .logo-text{display:flex; flex-direction:column; line-height:1.05}
+    .logo-text strong{font-size:1.02rem; letter-spacing:.12em; text-transform:uppercase}
+    .logo-text span{color:var(--muted); font-size:.9rem}
+
+    h1,h2,h3,p{margin-top:0}
+    h1{
+      font-size:clamp(2.4rem, 6vw, 5.1rem);
+      line-height:.96;
+      letter-spacing:-.045em;
+      margin:18px 0 14px;
+    }
+    h2{
+      font-size:clamp(1.5rem, 3vw, 2.4rem);
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+
+    .sub{
+      color:var(--muted);
+      font-size:1.02rem;
+      line-height:1.65;
+      max-width:74ch;
+    }
+
+    .grid{display:grid; gap:16px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+    .pill{
+      padding:18px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    }
+
+    .pill strong{display:block; margin-bottom:6px}
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:20px;
+    }
+
+    .btn,.ghost,.option,.avatar-choice{
+      border:0;
+      border-radius:18px;
+      padding:14px 20px;
+      font:inherit;
+      cursor:pointer;
+      transition:transform .14s ease, filter .14s ease, border-color .14s ease;
+    }
+
+    .btn{
+      background:linear-gradient(135deg, var(--cyan), #3bc4ff 52%, var(--navy2));
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 14px 30px rgba(25,215,242,.22);
+    }
+
+    .ghost{
+      background:rgba(255,255,255,.06);
+      color:#e4f5ff;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .btn:hover,.ghost:hover,.option:hover,.avatar-choice:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.03);
+    }
+
+    .field{display:flex; flex-direction:column; gap:8px}
+    label{font-weight:800; color:#dff6ff}
+
+    input,select{
+      width:100%;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--text);
+      border-radius:16px;
+      padding:14px 16px;
+      font:inherit;
+    }
+
+    input::placeholder{color:#aac2e0}
+
+    .host-layout{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:18px;
+      align-items:start;
+    }
+
+    .host-header{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .mini-kpis{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-top:14px;
+    }
+
+    .kpi{
+      padding:18px;
+      border-radius:20px;
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .kpi .label{color:var(--muted); font-size:.86rem; margin-bottom:6px}
+    .kpi .value{font-size:clamp(1.15rem,2.2vw,1.8rem); font-weight:900}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+
+    .qr-box{
+      padding:20px;
+      text-align:center;
+      border-radius:26px;
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.10);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .qr-ring{
+      position:absolute;
+      inset:-70px auto auto -70px;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(25,215,242,.18), transparent 65%);
+      pointer-events:none;
+    }
+
+    #qrcode{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:10px 0 8px;
+      min-height:320px;
+    }
+
+    #qrcode img{
+      border-radius:22px;
+      padding:12px;
+      background:#fff;
+      box-shadow:0 18px 40px rgba(0,0,0,.28);
+      max-width:100%;
+      height:auto;
+      width:300px;
+      display:block;
+    }
+
+    .stage{
+      min-height:720px;
+      padding:24px;
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(25,215,242,.14), transparent 36%),
+        radial-gradient(circle at 18% 100%, rgba(114,236,255,.10), transparent 24%),
+        radial-gradient(circle at 82% 100%, rgba(19,63,135,.20), transparent 30%),
+        var(--panel2);
+    }
+
+    .live-dot{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:#d8fff3;
+      font-weight:900;
+    }
+
+    .live-dot::before{
+      content:"";
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--mint);
+      box-shadow:0 0 0 0 rgba(138,247,214,.7);
+      animation:pulse 1.5s infinite;
+    }
+
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(138,247,214,.7)}
+      70%{box-shadow:0 0 0 12px rgba(138,247,214,0)}
+      100%{box-shadow:0 0 0 0 rgba(138,247,214,0)}
+    }
+
+    .podium-wrap{
+      display:grid;
+      grid-template-columns:1fr 1.2fr 1fr;
+      gap:16px;
+      align-items:end;
+      margin-top:10px;
+      position:relative;
+      z-index:1;
+    }
+
+    .podium-card{
+      padding:18px;
+      border-radius:24px 24px 14px 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      position:relative;
+      text-align:center;
+      overflow:hidden;
+    }
+
+    .podium-card.place-1{
+      min-height:360px;
+      background:linear-gradient(180deg, rgba(25,215,242,.18), rgba(255,255,255,.05)), rgba(255,255,255,.04);
+      box-shadow:0 22px 60px rgba(25,215,242,.18);
+    }
+
+    .podium-card.place-2{min-height:290px}
+    .podium-card.place-3{min-height:250px}
+
+    .podium-pop{animation:podiumPop .85s cubic-bezier(.2,.9,.2,1)}
+
+    @keyframes podiumPop{
+      0%{transform:translateY(24px) scale(.93); opacity:.75}
+      55%{transform:translateY(-10px) scale(1.03); opacity:1}
+      100%{transform:translateY(0) scale(1); opacity:1}
+    }
+
+    .crown{
+      position:absolute;
+      top:16px;
+      right:16px;
+      font-size:1.5rem;
+      filter:drop-shadow(0 4px 10px rgba(0,0,0,.4));
+    }
+
+    .avatar{
+      width:76px;
+      height:76px;
+      border-radius:50%;
+      margin:8px auto 12px;
+      display:grid;
+      place-items:center;
+      font-size:1.45rem;
+      font-weight:900;
+      color:white;
+      overflow:hidden;
+      background:linear-gradient(135deg, var(--cyan), #38c1ff 55%, var(--navy2));
+      box-shadow:0 10px 24px rgba(0,0,0,.24);
+      border:2px solid rgba(255,255,255,.14);
+    }
+
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .place-1 .avatar{
+      width:94px;
+      height:94px;
+      font-size:1.8rem;
+      background:linear-gradient(135deg, var(--cyan2), var(--cyan), #2f8cff);
+    }
+
+    .podium-name{
+      font-size:clamp(1rem,2.2vw,1.45rem);
+      font-weight:900;
+      letter-spacing:-.02em;
+      max-width:100%;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .podium-profile{color:var(--muted); font-size:.92rem; margin-top:4px}
+    .podium-score{margin-top:12px; font-size:clamp(1.5rem,3vw,2.8rem); font-weight:900; letter-spacing:-.04em}
+
+    .podium-meta{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .mini-chip{
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      color:#e4f5ff;
+      font-size:.82rem;
+      font-weight:800;
+    }
+
+    .ranking-table{
+      margin-top:18px;
+      border-radius:24px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      position:relative;
+      z-index:1;
+      background:rgba(6,18,42,.72);
+    }
+
+    table{width:100%; border-collapse:collapse}
+    th,td{padding:15px 14px; text-align:left; border-bottom:1px solid rgba(255,255,255,.06)}
+    th{background:rgba(255,255,255,.05); color:#d9eaff; font-size:.86rem; text-transform:uppercase; letter-spacing:.06em}
+    tbody tr{transition:background .22s ease, transform .22s ease}
+    tbody tr.row-flash{animation:rowFlash 1.2s ease}
+
+    @keyframes rowFlash{
+      0%{background:rgba(25,215,242,.28); transform:scale(1.01)}
+      100%{background:transparent; transform:scale(1)}
+    }
+
+    tbody tr:nth-child(1){background:rgba(25,215,242,.08)}
+    tbody tr:nth-child(2){background:rgba(255,255,255,.04)}
+    tbody tr:nth-child(3){background:rgba(114,236,255,.07)}
+
+    .rank-badge{
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .player-name-cell{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .small-avatar{
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      font-size:.9rem;
+      font-weight:900;
+      color:white;
+      background:linear-gradient(135deg, var(--cyan), #38c1ff 55%, var(--navy2));
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    .small-avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .ticker{
+      margin-top:16px;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.05);
+    }
+
+    .ticker-track{
+      display:flex;
+      gap:24px;
+      padding:12px 18px;
+      white-space:nowrap;
+      animation:scroll 24s linear infinite;
+    }
+
+    .ticker-item{font-weight:800; color:#e6f7ff}
+
+    @keyframes scroll{
+      from{transform:translateX(0)}
+      to{transform:translateX(-50%)}
+    }
+
+    .helper{color:var(--muted); line-height:1.5}
+    .player-shell{max-width:760px; margin:0 auto}
+    .player-topbar{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px}
+
+    .stats{
+      padding:14px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin:16px 0 18px;
+    }
+
+    .stat{
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .stat .label{font-size:.84rem; color:var(--muted); margin-bottom:6px}
+    .stat .value{font-size:1.3rem; font-weight:900}
+
+    .option{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--text);
+      text-align:left;
+      padding:18px;
+      width:100%;
+    }
+
+    .option strong{display:block; margin-bottom:6px}
+    .option small{display:block; color:var(--muted); line-height:1.45}
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .chip{
+      font-size:.8rem;
+      font-weight:800;
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(25,215,242,.12);
+      color:#eafcff;
+      border:1px solid rgba(25,215,242,.18);
+    }
+
+    .event-banner{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:rgba(114,236,255,.12);
+      color:#e7fcff;
+      border:1px solid rgba(114,236,255,.20);
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight:900;
+      margin-bottom:14px;
+    }
+
+    .hidden{display:none !important}
+
+    .player-result{
+      margin-top:18px;
+      padding:18px;
+      border-radius:20px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .big-score{
+      font-size:3rem;
+      font-weight:900;
+      letter-spacing:-.05em;
+    }
+
+    .avatar-picker{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .avatar-choice{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);
+      border-radius:16px;
+      padding:8px;
+    }
+
+    .avatar-choice.active{
+      border-color:var(--cyan);
+      transform:translateY(-2px);
+    }
+
+    .avatar-choice img{
+      width:100%;
+      aspect-ratio:1;
+      object-fit:cover;
+      border-radius:12px;
+      display:block;
+    }
+
+    @media (max-width:1100px){
+      .host-layout,.podium-wrap,.mini-kpis,.grid-3,.grid-2,.stats,.avatar-picker{grid-template-columns:1fr}
+      .podium-card.place-1,.podium-card.place-2,.podium-card.place-3{min-height:auto}
+      .brand-bar{justify-content:flex-start}
+    }
+  </style>
 </head>
-<body>
+<body class="bg-grid">
+  <div class="app">
 
-<h1>TEST Firebase</h1>
-<button onclick="send()">Wyślij</button>
+    <section id="landing" class="screen active">
+      <div class="hero">
+        <div class="glow g1"></div>
+        <div class="glow g2"></div>
+        <div class="glow g3"></div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        <div class="brand-bar">
+          <div class="badge">Dzień otwarty • host + telefon</div>
+          <div class="logo-lockup">
+            <div class="logo-box">TEB</div>
+            <div class="logo-text">
+              <strong>Dzień otwarty</strong>
+              <span>QR + podium + TOP 10 + gra</span>
+            </div>
+          </div>
+        </div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBDT7oalLLCVBFYPaHcZTLXMnK2wHRf_TQ",
-  authDomain: "dzien-otwarty-teb.firebaseapp.com",
-  projectId: "dzien-otwarty-teb",
-  databaseURL: "https://dzien-otwarty-teb-default-rtdb.europe-west1.firebasedatabase.app"
-};
+        <h1>Przetrwaj miesiąc<br>na żywo</h1>
+        <p class="sub">
+          Host uruchamia ekran eventowy, uczestnicy skanują QR i grają na telefonach.
+          Po zakończeniu wynik wpada bezpośrednio do rankingu.
+        </p>
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+        <div class="grid grid-3" style="margin-top:22px">
+          <div class="pill"><strong>📺 Projektor</strong>Ranking Mistrzów finansów z podium TOP 3.</div>
+          <div class="pill"><strong>📱 Gra na telefonie</strong>Uczestnik wpisuje nick, wybiera avatar i przechodzi 5 decyzji.</div>
+          <div class="pill"><strong>🏆 Wynik live</strong>Po ukończeniu wynik trafia od razu do rankingu.</div>
+        </div>
 
-window.send = function(){
-  push(ref(db,"scores"),{
-    name:"TEST",
-    score:123
-  });
-  alert("wysłano");
-}
-</script>
+        <div class="actions">
+          <button class="btn" id="openHostBtn">Uruchom ekran eventowy</button>
+        </div>
+      </div>
+    </section>
 
+    <section id="playerScreen" class="screen">
+      <div class="player-shell">
+        <div class="player-card">
+          <div class="brand-bar">
+            <div class="badge">📱 Tryb gracza</div>
+            <div class="logo-lockup">
+              <div class="logo-box">TEB</div>
+              <div class="logo-text">
+                <strong>Dzień otwarty</strong>
+                <span>wejdź do gry</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="playerSetup">
+            <h2>Dołącz do gry</h2>
+            <p class="sub">Wpisz nick, wybierz profil i avatar, a potem rozpocznij symulację finansową.</p>
+
+            <div class="grid grid-2" style="margin-top:18px">
+              <div class="field">
+                <label for="playerNickInput">Nick</label>
+                <input id="playerNickInput" placeholder="Np. Ola" />
+              </div>
+              <div class="field">
+                <label for="playerProfileSelect">Profil</label>
+                <select id="playerProfileSelect">
+                  <option value="student">Student</option>
+                  <option value="worker">Młody pracownik</option>
+                  <option value="freelancer">Freelancer</option>
+                  <option value="corpo">Pracownik korpo</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field" style="margin-top:14px">
+              <label>Wybierz avatar</label>
+              <div class="avatar-picker" id="avatarPicker"></div>
+            </div>
+
+            <div class="actions">
+              <button class="btn" id="startPlayerBtn">Rozpocznij grę</button>
+              <button class="ghost" id="backFromPlayerBtn">Wróć</button>
+            </div>
+
+            <div class="player-result" style="margin-top:18px">
+              <strong>Status</strong>
+              <div class="helper" id="playerConnectionStatus" style="margin-top:8px">Gotowe do startu.</div>
+            </div>
+          </div>
+
+          <div id="playerGame" class="hidden">
+            <div class="player-topbar">
+              <div class="badge" id="playerProgressBadge">Tydzień 1 z 5</div>
+              <div class="helper" id="playerBadge"></div>
+            </div>
+
+            <div class="stats">
+              <div class="stat"><div class="label">Stan konta</div><div class="value" id="playerMoneyValue">0 zł</div></div>
+              <div class="stat"><div class="label">Oszczędności</div><div class="value" id="playerSavingsValue">0 zł</div></div>
+              <div class="stat"><div class="label">Stres</div><div class="value" id="playerStressValue">0 / 100</div></div>
+            </div>
+
+            <div id="playerEventBanner" class="event-banner hidden">⚡ Zdarzenie losowe</div>
+            <h2 id="playerQuestionTitle"></h2>
+            <p class="sub" id="playerQuestionDescription"></p>
+            <div class="grid" id="playerOptionsContainer"></div>
+          </div>
+
+          <div id="playerResult" class="hidden player-result">
+            <div class="badge">🎯 Wynik końcowy</div>
+            <div class="big-score" id="playerFinalScore">0</div>
+            <div class="sub" id="playerFinalComment" style="margin-bottom:14px"></div>
+
+            <div class="grid grid-3">
+              <div class="pill"><strong>Konto</strong><span id="playerFinalMoney">0 zł</span></div>
+              <div class="pill"><strong>Stres</strong><span id="playerFinalStress">0 / 100</span></div>
+              <div class="pill"><strong>Bezpieczeństwo</strong><span id="playerFinalSafety">0 / 100</span></div>
+            </div>
+
+            <div class="actions">
+              <button class="btn" id="sendScoreBtn">Wyślij wynik do rankingu</button>
+              <button class="ghost" id="restartPlayerBtn">Zagraj ponownie</button>
+            </div>
+
+            <div class="helper" id="sendScoreStatus" style="margin-top:12px">Twój wynik jest gotowy do wysłania.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hostScreen" class="screen">
+      <div class="host-layout">
+        <div class="stage hero">
+          <div class="host-header">
+            <div>
+              <div class="badge"><span class="live-dot">LIVE</span> Dzień otwarty</div>
+              <h2 style="margin:14px 0 10px">Ranking Mistrzów finansów</h2>
+            </div>
+            <div class="logo-lockup">
+              <div class="logo-box">TEB</div>
+              <div class="logo-text">
+                <strong>Dzień otwarty</strong>
+                <span>podium + ranking live</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="podium-wrap">
+            <div class="podium-card place-2" id="podium2"></div>
+            <div class="podium-card place-1" id="podium1"></div>
+            <div class="podium-card place-3" id="podium3"></div>
+          </div>
+
+          <div class="ranking-table">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:72px">#</th>
+                  <th>Gracz</th>
+                  <th>Profil</th>
+                  <th>Wynik</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardBody">
+                <tr><td colspan="4" class="helper" style="padding:18px">Brak wyników. Uruchom ekran eventowy i zeskanuj QR telefonem.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="ticker">
+            <div class="ticker-track">
+              <span class="ticker-item">DZIEŃ OTWARTY • ZESKANUJ QR • zagraj na telefonie • wejdź do TOP 10 • zostań liderem dnia</span>
+              <span class="ticker-item">DZIEŃ OTWARTY • ZESKANUJ QR • zagraj na telefonie • wejdź do TOP 10 • zostań liderem dnia</span>
+              <span class="ticker-item">DZIEŃ OTWARTY • ZESKANUJ QR • zagraj na telefonie • wejdź do TOP 10 • zostań liderem dnia</span>
+              <span class="ticker-item">DZIEŃ OTWARTY • ZESKANUJ QR • zagraj na telefonie • wejdź do TOP 10 • zostań liderem dnia</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid" style="gap:18px">
+          <div class="qr-box">
+            <div class="qr-ring"></div>
+            <div class="badge">📱 Zeskanuj i graj</div>
+            <div id="qrcode"></div>
+            <div class="helper">QR prowadzi bezpośrednio do gry mobilnej</div>
+            <div class="helper mono" id="joinLinkText" style="word-break:break-all; margin-top:10px"></div>
+          </div>
+
+          <div class="panel" style="padding:20px">
+            <h3 style="margin-bottom:10px">Panel prowadzącego</h3>
+            <div class="mini-kpis">
+              <div class="kpi"><div class="label">Wyników</div><div class="value" id="scoresCount">0</div></div>
+              <div class="kpi"><div class="label">Best score</div><div class="value" id="bestScoreValue">—</div></div>
+              <div class="kpi"><div class="label">Nowy gracz</div><div class="value" id="lastJoinValue">—</div></div>
+              <div class="kpi"><div class="label">Status</div><div class="value" id="hostStatus">Gotowe</div></div>
+            </div>
+
+            <div class="actions">
+              <button class="ghost" id="clearScoresBtn">Wyczyść ranking</button>
+              <button class="ghost" id="backBtn">Wróć</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBDT7oalLLCVBFYPaHcZTLXMnK2wHRf_TQ",
+      authDomain: "dzien-otwarty-teb.firebaseapp.com",
+      projectId: "dzien-otwarty-teb",
+      storageBucket: "dzien-otwarty-teb.firebasestorage.app",
+      messagingSenderId: "862448117083",
+      appId: "1:862448117083:web:7a675b85f36251f120e67e",
+      databaseURL: "https://dzien-otwarty-teb-default-rtdb.europe-west1.firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const scoresRef = ref(db, "scores");
+
+    const avatarOptions = [
+      "https://api.dicebear.com/9.x/adventurer/svg?seed=Alex",
+      "https://api.dicebear.com/9.x/adventurer/svg?seed=Ola",
+      "https://api.dicebear.com/9.x/adventurer/svg?seed=Max",
+      "https://api.dicebear.com/9.x/adventurer/svg?seed=Kasia"
+    ];
+
+    const profiles = {
+      student: { label:'Student', income:3200, savings:500, baseStress:35 },
+      worker: { label:'Młody pracownik', income:5200, savings:1500, baseStress:25 },
+      freelancer: { label:'Freelancer', income:4700, savings:1000, baseStress:45 },
+      corpo: { label:'Pracownik korpo', income:7500, savings:2500, baseStress:30 }
+    };
+
+    const questions = [
+      {
+        title:'Wybierz mieszkanie',
+        description:'To największa decyzja kosztowa w miesiącu.',
+        options:[
+          { title:'Tanie mieszkanie na obrzeżach', text:'Mniej wygody, ale tańszy czynsz.', chips:['-1200 zł', '+8 stresu'], effect:(s)=>{ s.money-=1200; s.monthlyCosts+=1200; s.stress+=8; } },
+          { title:'Średnie mieszkanie', text:'Najbardziej zrównoważona opcja.', chips:['-1800 zł', '0 stresu'], effect:(s)=>{ s.money-=1800; s.monthlyCosts+=1800; } },
+          { title:'Mieszkanie w centrum', text:'Wygoda, ale duże obciążenie budżetu.', chips:['-2600 zł', '-6 stresu'], effect:(s)=>{ s.money-=2600; s.monthlyCosts+=2600; s.stress-=6; if(s.income<5000){ s.stress+=12; } } }
+        ]
+      },
+      {
+        title:'Codzienne wydatki i styl życia',
+        description:'Jedzenie i przyjemności robią ogromną różnicę.',
+        options:[
+          { title:'Oszczędnie', text:'Gotujesz i pilnujesz budżetu.', chips:['-700 zł', '+6 stresu'], effect:(s)=>{ s.money-=700; s.monthlyCosts+=700; s.stress+=6; } },
+          { title:'Balans', text:'Trochę kontroli, trochę wygody.', chips:['-1100 zł', '0 stresu'], effect:(s)=>{ s.money-=1100; s.monthlyCosts+=1100; } },
+          { title:'Wygodnie', text:'Jedzenie na mieście i spontaniczne wydatki.', chips:['-1700 zł', '-4 stresu'], effect:(s)=>{ s.money-=1700; s.monthlyCosts+=1700; s.stress-=4; } }
+        ]
+      },
+      {
+        title:'Wybierz transport',
+        description:'Transport wpływa na wygodę i koszty stałe.',
+        options:[
+          { title:'Komunikacja miejska', text:'Najtańsza opcja.', chips:['-150 zł', '+2 stresu'], effect:(s)=>{ s.money-=150; s.monthlyCosts+=150; s.stress+=2; } },
+          { title:'Samochód', text:'Wygoda i niezależność, ale kosztownie.', chips:['-900 zł', '-3 stresu'], effect:(s)=>{ s.money-=900; s.monthlyCosts+=900; s.stress-=3; } },
+          { title:'Taxi / aplikacje', text:'Elastycznie, ale nadal drogo.', chips:['-600 zł', '0 stresu'], effect:(s)=>{ s.money-=600; s.monthlyCosts+=600; } }
+        ]
+      },
+      {
+        title:'Niespodziewana awaria telefonu',
+        description:'Klasyczny nieplanowany wydatek.',
+        event:true,
+        options:[
+          { title:'Kup nowy telefon', text:'Problem znika, ale koszt jest duży.', chips:['-1800 zł', '-3 stresu'], effect:(s)=>{ s.money-=1800; s.stress-=3; } },
+          { title:'Napraw obecny', text:'Rozsądny kompromis.', chips:['-500 zł', '+2 stresu'], effect:(s)=>{ s.money-=500; s.stress+=2; } },
+          { title:'Odkładasz decyzję', text:'Nie płacisz teraz, ale stres rośnie.', chips:['0 zł', '+12 stresu'], effect:(s)=>{ s.stress+=12; } }
+        ]
+      },
+      {
+        title:'Co robisz z tym, co zostało?',
+        description:'Ostatnia decyzja pokazuje Twoje podejście do pieniędzy.',
+        options:[
+          { title:'Odkładam pieniądze', text:'Budujesz poduszkę finansową.', chips:['+20% do oszczędności', '-10 stresu'], effect:(s)=>{ const saved=Math.max(0,Math.round(s.money*0.2)); s.money-=saved; s.savings+=saved; s.stress-=10; } },
+          { title:'Inwestuję część środków', text:'Może się udać, ale jest ryzyko.', chips:['ryzyko / szansa', 'wynik losowy'], effect:(s)=>{ const investment=Math.min(1000,Math.max(400,Math.round(s.money*0.18))); s.money-=investment; if(Math.random()<0.5){ const gain=Math.round(investment*1.8); s.money+=gain; s.savings+=150; s.stress-=4; } else { const partial=Math.round(investment*0.4); s.money+=partial; s.stress+=10; } } },
+          { title:'Wydaję na przyjemności', text:'Lepsze samopoczucie, mniejsza rezerwa.', chips:['-800 zł', '-8 stresu'], effect:(s)=>{ s.money-=800; s.stress-=8; } }
+        ]
+      }
+    ];
+
+    const els = {
+      openHostBtn: document.getElementById('openHostBtn'),
+      qrcode: document.getElementById('qrcode'),
+      joinLinkText: document.getElementById('joinLinkText'),
+      scoresCount: document.getElementById('scoresCount'),
+      bestScoreValue: document.getElementById('bestScoreValue'),
+      lastJoinValue: document.getElementById('lastJoinValue'),
+      hostStatus: document.getElementById('hostStatus'),
+      leaderboardBody: document.getElementById('leaderboardBody'),
+      podium1: document.getElementById('podium1'),
+      podium2: document.getElementById('podium2'),
+      podium3: document.getElementById('podium3'),
+      clearScoresBtn: document.getElementById('clearScoresBtn'),
+      backBtn: document.getElementById('backBtn'),
+      playerNickInput: document.getElementById('playerNickInput'),
+      playerProfileSelect: document.getElementById('playerProfileSelect'),
+      startPlayerBtn: document.getElementById('startPlayerBtn'),
+      backFromPlayerBtn: document.getElementById('backFromPlayerBtn'),
+      playerConnectionStatus: document.getElementById('playerConnectionStatus'),
+      playerSetup: document.getElementById('playerSetup'),
+      playerGame: document.getElementById('playerGame'),
+      playerResult: document.getElementById('playerResult'),
+      playerProgressBadge: document.getElementById('playerProgressBadge'),
+      playerBadge: document.getElementById('playerBadge'),
+      playerMoneyValue: document.getElementById('playerMoneyValue'),
+      playerSavingsValue: document.getElementById('playerSavingsValue'),
+      playerStressValue: document.getElementById('playerStressValue'),
+      playerEventBanner: document.getElementById('playerEventBanner'),
+      playerQuestionTitle: document.getElementById('playerQuestionTitle'),
+      playerQuestionDescription: document.getElementById('playerQuestionDescription'),
+      playerOptionsContainer: document.getElementById('playerOptionsContainer'),
+      playerFinalScore: document.getElementById('playerFinalScore'),
+      playerFinalComment: document.getElementById('playerFinalComment'),
+      playerFinalMoney: document.getElementById('playerFinalMoney'),
+      playerFinalStress: document.getElementById('playerFinalStress'),
+      playerFinalSafety: document.getElementById('playerFinalSafety'),
+      sendScoreBtn: document.getElementById('sendScoreBtn'),
+      sendScoreStatus: document.getElementById('sendScoreStatus'),
+      restartPlayerBtn: document.getElementById('restartPlayerBtn'),
+      avatarPicker: document.getElementById('avatarPicker')
+    };
+
+    let scores = [];
+    let lastAddedId = null;
+    let playerState = null;
+    let selectedAvatar = avatarOptions[0];
+    let hostListenerStarted = false;
+
+    function show(id){
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function getModeFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      return params.get('mode') || '';
+    }
+
+    function buildJoinUrl(){
+      return "https://darkwarior1000.github.io/dzien-otwarty/?mode=player";
+    }
+
+    function setupQr(url){
+      const qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(url);
+      els.qrcode.innerHTML = '<img src="' + qrSrc + '" alt="Kod QR do dołączenia">';
+      els.joinLinkText.textContent = url;
+    }
+
+    function formatPLN(v){
+      return new Intl.NumberFormat('pl-PL').format(Math.round(v)) + ' zł';
+    }
+
+    function clamp(n,min,max){
+      return Math.min(max, Math.max(min,n));
+    }
+
+    function initials(name){
+      return (name || '?').trim().split(/\s+/).slice(0,2).map(x => x[0]?.toUpperCase() || '').join('') || '?';
+    }
+
+    function avatarMarkup(url, name){
+      return url ? '<img src="' + url + '" alt="Avatar ' + (name || '') + '">' : initials(name);
+    }
+
+    function computeBudgetStress(s){
+      const ratio = s.monthlyCosts / s.income;
+      if (ratio <= .6) return 0;
+      if (ratio <= .75) return 10;
+      if (ratio <= .9) return 20;
+      if (ratio <= 1) return 30;
+      return 45;
+    }
+
+    function computeSavingsModifier(s){
+      if (s.monthlyCosts <= 0) return 0;
+      const ratio = s.savings / s.monthlyCosts;
+      if (s.money < 0) return 35;
+      if (s.savings === 0) return 20;
+      if (ratio > 3) return -20;
+      if (ratio >= 1) return -10;
+      return 10;
+    }
+
+    function recalculateStress(s){
+      let stress = s.stress;
+      stress += computeBudgetStress(s);
+      stress += computeSavingsModifier(s);
+      if (s.money < 0) stress = Math.max(stress, 80);
+      s.stress = clamp(stress, 0, 100);
+    }
+
+    function computeSafety(s){
+      if (s.monthlyCosts <= 0) return 0;
+      const ratio = s.savings / s.monthlyCosts;
+      if (ratio >= 3) return 100;
+      if (ratio >= 2) return 70;
+      if (ratio >= 1) return 40;
+      if (s.savings > 0) return 20;
+      return 0;
+    }
+
+    function computeMoneyPoints(s){
+      if (s.money < 0) return 0;
+      if (s.money < 500) return 10;
+      if (s.money < 1500) return 25;
+      if (s.money < 3000) return 40;
+      if (s.money < 5000) return 60;
+      return 80;
+    }
+
+    function getResultLabel(score){
+      if (score >= 220) return { title:'Mistrz finansów', comment:'Świetnie kontrolujesz wydatki i bezpieczeństwo.' };
+      if (score >= 160) return { title:'Rozsądny zarządzający budżetem', comment:'Dobrze sobie radzisz, choć większa rezerwa byłaby pomocna.' };
+      if (score >= 100) return { title:'Na granicy stabilności', comment:'Jedna większa niespodzianka może zachwiać budżetem.' };
+      return { title:'Finansowy survival', comment:'Przydałoby się lepiej zrównoważyć wygodę i bezpieczeństwo.' };
+    }
+
+    function animatePodium(){
+      [els.podium1, els.podium2, els.podium3].forEach(el => {
+        el.classList.remove('podium-pop');
+        void el.offsetWidth;
+        el.classList.add('podium-pop');
+      });
+    }
+
+    function renderPodiumCard(el, entry, place){
+      if (!entry){
+        el.innerHTML = `
+          ${place === 1 ? '<div class="crown">👑</div>' : ''}
+          <div class="avatar">${place}</div>
+          <div class="podium-name">${place === 1 ? 'Lider dnia' : 'Czeka na wynik'}</div>
+          <div class="podium-profile">Miejsce na wynik</div>
+          <div class="podium-score">—</div>
+          <div class="podium-meta"><span class="mini-chip">czeka na gracza</span></div>
+        `;
+        return;
+      }
+
+      el.innerHTML = `
+        ${place === 1 ? '<div class="crown">👑</div>' : ''}
+        <div class="avatar">${avatarMarkup(entry.avatar, entry.name)}</div>
+        <div class="podium-name">${entry.name}</div>
+        <div class="podium-profile">${entry.profile}</div>
+        <div class="podium-score">${entry.score} pkt</div>
+        <div class="podium-meta">
+          <span class="mini-chip">konto ${formatPLN(entry.money || 0)}</span>
+          <span class="mini-chip">stres ${entry.stress || 0}/100</span>
+        </div>
+      `;
+    }
+
+    function renderBoard(){
+      els.scoresCount.textContent = scores.length;
+      els.bestScoreValue.textContent = scores.length ? scores[0].score + ' pkt' : '—';
+      els.lastJoinValue.textContent = scores.length ? scores[0].name : '—';
+
+      renderPodiumCard(els.podium1, scores[0], 1);
+      renderPodiumCard(els.podium2, scores[1], 2);
+      renderPodiumCard(els.podium3, scores[2], 3);
+      animatePodium();
+
+      if (!scores.length){
+        els.leaderboardBody.innerHTML = '<tr><td colspan="4" class="helper" style="padding:18px">Brak wyników. Uruchom ekran eventowy i zeskanuj QR telefonem.</td></tr>';
+        return;
+      }
+
+      els.leaderboardBody.innerHTML = scores.map((row, i) => `
+        <tr class="${row.id === lastAddedId ? 'row-flash' : ''}">
+          <td><div class="rank-badge">${i+1}</div></td>
+          <td>
+            <div class="player-name-cell">
+              <div class="small-avatar">${avatarMarkup(row.avatar, row.name)}</div>
+              <strong>${row.name}</strong>
+            </div>
+          </td>
+          <td>${row.profile}</td>
+          <td><strong>${row.score} pkt</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    function initAvatarPicker(){
+      els.avatarPicker.innerHTML = avatarOptions.map((url, idx) => `
+        <button type="button" class="avatar-choice ${idx===0 ? 'active' : ''}" data-url="${url}">
+          <img src="${url}" alt="Avatar ${idx+1}">
+        </button>
+      `).join('');
+
+      els.avatarPicker.querySelectorAll('.avatar-choice').forEach(btn => {
+        btn.addEventListener('click', () => {
+          els.avatarPicker.querySelectorAll('.avatar-choice').forEach(x => x.classList.remove('active'));
+          btn.classList.add('active');
+          selectedAvatar = btn.dataset.url;
+        });
+      });
+    }
+
+    function startHostListener(){
+      if (hostListenerStarted) return;
+      hostListenerStarted = true;
+
+      onValue(scoresRef, snapshot => {
+        const rows = [];
+        snapshot.forEach(child => {
+          rows.push({ id: child.key, ...child.val() });
+        });
+        rows.sort((a,b) => b.score - a.score);
+        scores = rows.slice(0, 10);
+        lastAddedId = scores.length ? scores[0].id : null;
+        renderBoard();
+        els.hostStatus.textContent = 'QR gotowy';
+      });
+    }
+
+    function initHost(){
+      show('hostScreen');
+      setupQr(buildJoinUrl());
+      startHostListener();
+      renderBoard();
+    }
+
+    function initPlayerMode(){
+      show('playerScreen');
+      els.playerConnectionStatus.textContent = 'Połączenie gotowe. Po ukończeniu gry wyślesz wynik do rankingu.';
+    }
+
+    function resetPlayerState(){
+      els.playerSetup.classList.remove('hidden');
+      els.playerGame.classList.add('hidden');
+      els.playerResult.classList.add('hidden');
+      els.sendScoreStatus.textContent = 'Twój wynik jest gotowy do wysłania.';
+      playerState = null;
+    }
+
+    function startPlayerGame(){
+      const nick = (els.playerNickInput.value || 'Gracz').trim();
+      const profileKey = els.playerProfileSelect.value;
+      const profile = profiles[profileKey];
+
+      playerState = {
+        name: nick,
+        avatar: selectedAvatar,
+        profileKey,
+        profileLabel: profile.label,
+        income: profile.income,
+        money: profile.income,
+        savings: profile.savings,
+        stress: profile.baseStress,
+        monthlyCosts: 0,
+        currentQuestion: 0,
+        safety: 0,
+        finalScore: 0
+      };
+
+      els.playerSetup.classList.add('hidden');
+      els.playerGame.classList.remove('hidden');
+      renderPlayerQuestion();
+    }
+
+    function updatePlayerStats(){
+      els.playerMoneyValue.textContent = formatPLN(playerState.money);
+      els.playerSavingsValue.textContent = formatPLN(playerState.savings);
+      els.playerStressValue.textContent = `${playerState.stress} / 100`;
+      els.playerBadge.textContent = `${playerState.name} • ${playerState.profileLabel}`;
+    }
+
+    function renderPlayerQuestion(){
+      updatePlayerStats();
+      const q = questions[playerState.currentQuestion];
+      els.playerProgressBadge.textContent = `Tydzień ${playerState.currentQuestion + 1} z ${questions.length}`;
+      els.playerQuestionTitle.textContent = q.title;
+      els.playerQuestionDescription.textContent = q.description;
+      els.playerEventBanner.classList.toggle('hidden', !q.event);
+      els.playerOptionsContainer.innerHTML = '';
+
+      q.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.innerHTML = `
+          <strong>${option.title}</strong>
+          <small>${option.text}</small>
+          <div class="chips">${option.chips.map(c => `<span class="chip">${c}</span>`).join('')}</div>
+        `;
+        btn.addEventListener('click', () => {
+          option.effect(playerState);
+          recalculateStress(playerState);
+          playerState.currentQuestion++;
+          if (playerState.currentQuestion >= questions.length) finishPlayerGame();
+          else renderPlayerQuestion();
+        });
+        els.playerOptionsContainer.appendChild(btn);
+      });
+    }
+
+    function finishPlayerGame(){
+      playerState.safety = computeSafety(playerState);
+      playerState.finalScore = computeMoneyPoints(playerState) + playerState.safety + (100 - playerState.stress);
+
+      const result = getResultLabel(playerState.finalScore);
+      els.playerGame.classList.add('hidden');
+      els.playerResult.classList.remove('hidden');
+      els.playerFinalScore.textContent = playerState.finalScore;
+      els.playerFinalComment.textContent = result.title + ' — ' + result.comment;
+      els.playerFinalMoney.textContent = formatPLN(playerState.money);
+      els.playerFinalStress.textContent = `${playerState.stress} / 100`;
+      els.playerFinalSafety.textContent = `${playerState.safety} / 100`;
+    }
+
+    async function sendScore(){
+      if (!playerState) return;
+
+      await push(scoresRef, {
+        name: playerState.name,
+        avatar: playerState.avatar,
+        profile: playerState.profileLabel,
+        score: playerState.finalScore,
+        money: playerState.money,
+        stress: playerState.stress,
+        safety: playerState.safety,
+        createdAt: Date.now()
+      });
+
+      els.sendScoreStatus.textContent = 'Wynik wysłany do rankingu!';
+    }
+
+    async function clearScores(){
+      await remove(scoresRef);
+    }
+
+    function routeInitialScreen(){
+      const mode = getModeFromUrl();
+      if (mode === 'player') initPlayerMode();
+      else if (mode === 'host') initHost();
+      else show('landing');
+    }
+
+    els.openHostBtn.addEventListener('click', initHost);
+    els.clearScoresBtn.addEventListener('click', clearScores);
+    els.backBtn.addEventListener('click', () => show('landing'));
+    els.startPlayerBtn.addEventListener('click', startPlayerGame);
+    els.backFromPlayerBtn.addEventListener('click', () => show('landing'));
+    els.sendScoreBtn.addEventListener('click', sendScore);
+    els.restartPlayerBtn.addEventListener('click', resetPlayerState);
+
+    initAvatarPicker();
+    routeInitialScreen();
+  </script>
 </body>
 </html>
